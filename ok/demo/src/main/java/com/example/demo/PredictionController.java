@@ -1,7 +1,11 @@
 package com.example.demo;
 
-import org.springframework.web.bind.annotation.*;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @CrossOrigin
@@ -10,7 +14,7 @@ public class PredictionController {
     @GetMapping("/predict")
     public Map<String, Object> predict() {
 
-        // Dummy values (replace later with Python output if needed)
+        // Example values (replace later with file/Python output)
         double lastPrice = 22000;
         double predictedPrice = 22150;
 
