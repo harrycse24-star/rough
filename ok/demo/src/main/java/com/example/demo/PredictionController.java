@@ -1,37 +1,37 @@
-package com.example.demo;
+@GetMapping("/predict")
+public Map<String, Object> getData() throws Exception {
 
-import java.util.HashMap;
-import java.util.Map;
+    List<String> dates = new ArrayList<>();
+    List<Double> prices = new ArrayList<>();
 
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
+    BufferedReader br = new BufferedReader(
+        new FileReader("C:/Users/Naresh/OneDrive/Desktop/delete/rough/ok/NIFTY.csv")
+    );
 
-@RestController
-@CrossOrigin
-public class PredictionController {
+    String line;
+    br.readLine(); // skip header
 
-    @GetMapping("/predict")
-    public Map<String, Object> predict() {
+    while ((line = br.readLine()) != null) {
+        String[] v = line.split(",");
 
-        // Example values (replace later with file/Python output)
-        double lastPrice = 22000;
-        double predictedPrice = 22150;
-
-        String status;
-        if (predictedPrice > lastPrice) {
-            status = "Positive";
-        } else if (predictedPrice < lastPrice) {
-            status = "Negative";
-        } else {
-            status = "Neutral";
-        }
-
-        Map<String, Object> response = new HashMap<>();
-        response.put("lastPrice", lastPrice);
-        response.put("predictedPrice", predictedPrice);
-        response.put("status", status);
-
-        return response;
+        dates.add(v[0]);
+        prices.add(Double.parseDouble(v[4].replace(",", "")));
     }
+
+    br.close();
+
+    double lastPrice = prices.get(prices.size() - 1);
+    double predictedPrice = lastPrice + 100;
+
+    String status = predictedPrice > lastPrice ? "Positive"
+                   : predictedPrice < lastPrice ? "Negative"
+                   : "Neutral";
+
+    Map<String, Object> res = new HashMap<>();
+    res.put("dates", dates);
+    res.put("prices", prices);
+    res.put("predictedPrice", predictedPrice);
+    res.put("status", status);
+
+    return res;
 }

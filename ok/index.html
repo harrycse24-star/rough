@@ -1,20 +1,28 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Stock Prediction</title>
+    <title>Stock Trend</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
 
-<h2>Stock Prediction</h2>
+<h2>Stock Price Trend</h2>
 <p id="status"></p>
 
-<canvas id="chart" width="600" height="300"></canvas>
+<canvas id="chart"></canvas>
 
 <script>
 fetch("http://localhost:8080/predict")
 .then(res => res.json())
 .then(data => {
+
+    let dates = data.dates;
+    let prices = data.prices;
+    let predicted = data.predictedPrice;
+
+    // Add prediction point
+    dates.push("Next Day");
+    prices.push(predicted);
 
     document.getElementById("status").innerText =
         "Status: " + data.status;
@@ -24,14 +32,24 @@ fetch("http://localhost:8080/predict")
     new Chart(ctx, {
         type: 'line',
         data: {
-            labels: ["Last", "Next"],
-            datasets: [{
-                label: "Price",
-                data: [data.lastPrice, data.predictedPrice],
-                borderWidth: 2
-            }]
+            labels: dates,
+            datasets: [
+                {
+                    label: "Historical Price",
+                    data: prices.slice(0, -1),
+                    borderWidth: 2,
+                    tension: 0.3
+                },
+                {
+                    label: "Prediction",
+                    data: [...Array(prices.length - 1).fill(null), predicted],
+                    borderWidth: 2,
+                    borderDash: [5, 5]
+                }
+            ]
         }
     });
+
 });
 </script>
 
