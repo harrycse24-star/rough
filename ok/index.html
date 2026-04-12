@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Stock Prediction</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+<h2>Stock Prediction</h2>
+<p id="status"></p>
+
+<canvas id="chart" width="600" height="300"></canvas>
+
+<script>
+fetch("http://localhost:8080/predict")
+.then(res => res.json())
+.then(data => {
+
+    document.getElementById("status").innerText =
+        "Status: " + data.status;
+
+    const ctx = document.getElementById("chart");
+
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: ["Last", "Next"],
+            datasets: [{
+                label: "Price",
+                data: [data.lastPrice, data.predictedPrice],
+                borderWidth: 2
+            }]
+        }
+    });
+});
+</script>
+
+</body>
+</html>

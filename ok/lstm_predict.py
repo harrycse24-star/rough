@@ -100,3 +100,4 @@ plt.legend()
 plt.grid()
 
 plt.show()
+#venv\Scripts\activate
